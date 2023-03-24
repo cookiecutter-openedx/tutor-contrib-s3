@@ -29,4 +29,3 @@ BLOCK_STRUCTURES_SETTINGS = dict(
     PRUNING_ACTIVE = True,
     DIRECTORY_PREFIX = "courses/"
 )
-FILE_UPLOAD_STORAGE_PREFIX = "submissions_attachments"
