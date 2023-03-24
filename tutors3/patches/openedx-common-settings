@@ -1,8 +1,14 @@
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-VIDEO_IMAGE_SETTINGS["STORAGE_KWARGS"]["location"] = VIDEO_IMAGE_SETTINGS["STORAGE_KWARGS"]["location"].lstrip("/")
-VIDEO_TRANSCRIPTS_SETTINGS["STORAGE_KWARGS"]["location"] = VIDEO_TRANSCRIPTS_SETTINGS["STORAGE_KWARGS"]["location"].lstrip("/")
-GRADES_DOWNLOAD["STORAGE_KWARGS"]["location"] = GRADES_DOWNLOAD["STORAGE_KWARGS"]["location"].lstrip("/")
-GRADES_DOWNLOAD["STORAGE_KWARGS"]["bucket"] = "{{ S3_GRADE_BUCKET }}"
+AWS_AUTO_CREATE_BUCKET = False
+AWS_DEFAULT_ACL = None # inherit from the bucket
+AWS_QUERYSTRING_EXPIRE = 7 * 24 * 60 * 60  # 1 week: this is necessary to generate valid download urls
+{% if S3_HOST %}
+AWS_S3_ENDPOINT_URL = "{{ "https" if S3_USE_SSL else "http" }}://{{ S3_HOST }}{% if S3_PORT %}:{{ S3_PORT }}{% endif %}"
+{% endif %}
+AWS_S3_USE_SSL = {{ "True" if S3_USE_SSL else "False" }}
+AWS_S3_SECURE_URLS = {{ "True" if S3_USE_SSL else "False" }}
+AWS_S3_ADDRESSING_STYLE = "{{ S3_ADDRESSING_STYLE }}"
+AWS_S3_REGION_NAME = "{{ S3_REGION }}"
+AWS_S3_SIGNATURE_VERSION = "{{ S3_SIGNATURE_VERSION }}"
 
 BLOCK_STRUCTURES_SETTINGS = dict(
     COURSE_PUBLISH_TASK_DELAY = 30,
@@ -12,22 +18,17 @@ BLOCK_STRUCTURES_SETTINGS = dict(
     DIRECTORY_PREFIX = "courses/"
 )
 
-ORA2_FILEUPLOAD_BACKEND = "s3"
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 FILE_UPLOAD_STORAGE_BUCKET_NAME = "{{ S3_FILE_UPLOAD_BUCKET }}"
 FILE_UPLOAD_STORAGE_PREFIX = "submissions_attachments"
 
-AWS_S3_SIGNATURE_VERSION = "{{ S3_SIGNATURE_VERSION }}"
+GRADES_DOWNLOAD["STORAGE_KWARGS"]["location"] = GRADES_DOWNLOAD["STORAGE_KWARGS"]["location"].lstrip("/")
+GRADES_DOWNLOAD["STORAGE_KWARGS"]["bucket"] = "{{ S3_GRADE_BUCKET }}"
 
-{% if S3_HOST %}
-AWS_S3_ENDPOINT_URL = "{{ "https" if S3_USE_SSL else "http" }}://{{ S3_HOST }}{% if S3_PORT %}:{{ S3_PORT }}{% endif %}"
-{% endif %}
+MEDIA_ROOT="openedx/media/"
 
-AWS_S3_USE_SSL = {{ "True" if S3_USE_SSL else "False" }}
-AWS_S3_SECURE_URLS = {{ "True" if S3_USE_SSL else "False" }}
-AWS_DEFAULT_ACL = None # inherit from the bucket
-AWS_S3_ADDRESSING_STYLE = "{{ S3_ADDRESSING_STYLE }}"
-AWS_AUTO_CREATE_BUCKET = False
+ORA2_FILEUPLOAD_BACKEND = "s3"
 
-AWS_S3_REGION_NAME = "{{ S3_REGION }}"
-AWS_QUERYSTRING_EXPIRE = 7 * 24 * 60 * 60  # 1 week: this is necessary to generate valid download urls
+VIDEO_IMAGE_SETTINGS["STORAGE_KWARGS"]["location"] = VIDEO_IMAGE_SETTINGS["STORAGE_KWARGS"]["location"].lstrip("/")
+VIDEO_TRANSCRIPTS_SETTINGS["STORAGE_KWARGS"]["location"] = VIDEO_TRANSCRIPTS_SETTINGS["STORAGE_KWARGS"]["location"].lstrip("/")
